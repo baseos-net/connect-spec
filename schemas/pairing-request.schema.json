@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baseos.net/connect/schemas/pairing-request.schema.json",
+  "title": "BaseOS Connect pairing request",
+  "type": "object",
+  "additionalProperties": false,
+  "anyOf": [
+    { "required": ["pair_code", "site_url", "receiver_url"] },
+    { "required": ["auth_code", "code_verifier", "site_url", "receiver_url"] }
+  ],
+  "properties": {
+    "pair_code": { "type": "string", "maxLength": 32 },
+    "auth_code": { "type": "string", "maxLength": 128 },
+    "code_verifier": { "type": "string", "maxLength": 128 },
+    "site_url": { "type": "string", "format": "uri", "maxLength": 500 },
+    "receiver_url": { "type": "string", "format": "uri", "maxLength": 500 },
+    "flavor": { "type": "string", "maxLength": 64 },
+    "receiver_version": { "type": "string", "maxLength": 64 },
+    "protocol_supported": { "type": "array", "items": { "type": "string" } }
+  }
+}

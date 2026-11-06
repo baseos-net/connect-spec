@@ -1,0 +1,114 @@
+openapi: 3.1.0
+info:
+  title: BaseOS Connect API
+  version: "2.1"
+  description: |
+    Production API served by BaseOS Core at /api/v1/connect.
+servers:
+  - url: https://baseos.net/api/v1/connect
+paths:
+  /pair:
+    post:
+      operationId: pair
+      summary: Consume a one-time pair code or an auth code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/pairing-request.schema.json
+      responses:
+        "200":
+          description: Credential issued once
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/pairing-response.schema.json
+        "422":
+          description: connect.pair_invalid or validation error
+  /hello:
+    post:
+      operationId: hello
+      summary: Receiver announces protocol, features, and optional site schema
+      parameters:
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/WebhookTimestamp"
+        - $ref: "#/components/parameters/WebhookSignature"
+        - $ref: "#/components/parameters/Connection"
+        - $ref: "#/components/parameters/Protocol"
+      responses:
+        "200":
+          description: Accepted
+  /commands:
+    get:
+      operationId: pollCommands
+      summary: Long-poll commands for this connection
+      parameters:
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/WebhookTimestamp"
+        - $ref: "#/components/parameters/WebhookSignature"
+        - $ref: "#/components/parameters/Connection"
+        - $ref: "#/components/parameters/Protocol"
+        - name: wait
+          in: query
+          schema: { type: integer, maximum: 20 }
+      responses:
+        "200":
+          description: Zero or more command envelopes
+  /commands/{id}/result:
+    post:
+      operationId: commandResult
+      summary: Report the result of a polled command
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/WebhookTimestamp"
+        - $ref: "#/components/parameters/WebhookSignature"
+        - $ref: "#/components/parameters/Connection"
+        - $ref: "#/components/parameters/Protocol"
+      responses:
+        "200":
+          description: Stored
+  /events:
+    post:
+      operationId: events
+      summary: Receiver reports post.changed or post.deleted
+      parameters:
+        - $ref: "#/components/parameters/WebhookId"
+        - $ref: "#/components/parameters/WebhookTimestamp"
+        - $ref: "#/components/parameters/WebhookSignature"
+        - $ref: "#/components/parameters/Connection"
+        - $ref: "#/components/parameters/Protocol"
+      responses:
+        "200":
+          description: Stored
+components:
+  parameters:
+    WebhookId:
+      name: webhook-id
+      in: header
+      required: true
+      schema: { type: string }
+    WebhookTimestamp:
+      name: webhook-timestamp
+      in: header
+      required: true
+      schema: { type: string }
+    WebhookSignature:
+      name: webhook-signature
+      in: header
+      required: true
+      schema: { type: string, example: "v1,base64" }
+    Connection:
+      name: baseos-connection
+      in: header
+      required: true
+      schema: { type: string }
+    Protocol:
+      name: baseos-protocol
+      in: header
+      required: true
+      schema: { type: string, example: "2.1" }

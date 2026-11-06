@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baseos.dev/schemas/content-2.json",
+  "title": "Base OS Content Contract v2",
+  "type": "object",
+  "required": ["content_id", "revision", "content_hash", "title", "slug", "body_html"],
+  "properties": {
+    "content_id": { "type": "string" },
+    "revision": { "type": "integer", "minimum": 0 },
+    "content_hash": { "type": "string", "pattern": "^sha256:" },
+    "locale": { "type": "string" },
+    "content_type": { "type": "string" },
+    "title": { "type": "string", "minLength": 1 },
+    "slug": { "type": "string" },
+    "excerpt": { "type": ["string", "null"] },
+    "body_html": { "type": "string" },
+    "seo": { "type": "object" },
+    "taxonomy": { "type": "object" },
+    "featured_media": { "type": ["object", "null"] },
+    "inline_media": { "type": "array" },
+    "internal_links": { "type": "array" },
+    "published_at": { "type": ["string", "null"] }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://baseos.net/connect/schemas/pairing-response.schema.json",
+  "title": "BaseOS Connect pairing response",
+  "type": "object",
+  "required": ["connection_id", "secret"],
+  "properties": {
+    "connection_id": { "type": "string" },
+    "secret": { "type": "string", "description": "Shown once. Includes the whsec_ prefix. This is the HMAC key." },
+    "protocol": { "type": "string" },
+    "poll_url": { "type": "string", "format": "uri" },
+    "events_url": { "type": "string", "format": "uri" },
+    "status": { "type": "string", "enum": ["healthy", "pending_confirm"] }
+  }
+}
